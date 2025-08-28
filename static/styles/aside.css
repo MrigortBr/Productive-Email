@@ -1,0 +1,139 @@
+aside{
+    width: 20vw;
+    border-right: 1px solid black;
+    display: flex;
+        font-family: "Inter", sans-serif;
+}
+
+aside > div {
+    width: 100%;
+    display: flex;
+    flex-direction: column; /* muda para coluna */
+    gap: 0;                 /* remove espaçamento entre os itens */
+    justify-content: flex-start; /* alinha ao topo */
+    align-items: stretch;        /* faz os itens ocuparem toda a largura do container */
+}
+
+
+.productive-container{
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    transition: 500ms;
+}
+
+.emails-container{
+    height: 85%;
+    overflow-y: auto;
+    padding-bottom: 1%;
+    transition: 500ms;
+}
+
+
+.emails-container::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	border-radius: 10px;
+	background-color: transparent;
+}
+
+.emails-container::-webkit-scrollbar
+{
+	width: 10px;
+	background-color: transparent;
+}
+
+.emails-container::-webkit-scrollbar-thumb
+{
+	border-radius: 10px;
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+	background-color: #555;
+}
+
+
+.productive-half{
+    min-height: 40vh;
+    max-height: 100vh;
+    overflow-y: hidden;
+}
+
+.productive-hidden{
+    min-height: 5vh;
+    max-height: 5vh;
+    overflow-y: hidden;
+}
+
+.productive-hidden > .emails-container {
+    opacity: 0;
+}
+
+.title{
+    width: 95%;
+    margin: 1vh auto;
+    background-color: #a75c01;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 1% 0;
+    user-select: none;
+    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0);
+    transition: 500ms;
+}
+
+.title:hover{
+    width: 99%;
+    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.425);
+}
+
+.title > svg{
+    margin-left: 1vw;
+    height: 100%;
+    transition: 500ms;
+}
+
+span[attr-state="show"] > p > svg{
+    transform: rotate(0deg);
+}
+
+span[attr-state="hidden"] > p > svg{
+    transform: rotate(180deg);
+}
+
+.email{
+    width: 90%;
+    background-color: #a16a26;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 500ms;
+    border: 1px solid transparent;
+    margin: 1vh 0;
+    margin-left:7%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column; 
+    gap: 0;                
+    justify-content: flex-start; 
+    align-items: stretch;    
+    user-select: none;
+}
+
+.email:hover{
+    border: 1px solid black;
+}
+
+.email > p {
+    text-align: start;
+    padding: 1%;
+    box-sizing: content-box;
+        margin: 0;
+}
+
+.no-data{
+    font-family: "Inter", sans-serif;
+    font-weight: bolder;
+    height: fit-content;
+}

@@ -1,0 +1,197 @@
+main{
+    display: flex;
+    height: 90vh;
+    width: 100%;
+}
+
+#email-full{
+    width: 80vw;
+    height: 90vh;
+    display: flex;
+}
+
+#help{
+    width: 60%;
+    height: 60%;
+    box-shadow: 0px 10px 13px 0px rgba(184, 98, 0, 0.322);
+    background: var(--primary-color-gradient);
+    border-radius: 20px;
+    margin: auto;
+    display: flex;
+    flex-direction: column; 
+    gap: 0;                 
+    justify-content: flex-start; 
+    align-items: stretch;        
+}
+
+#help > p{
+    width: 100%;
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 24px;
+    font-family: "Inter", sans-serif;
+    margin-top: 1%;
+    margin-bottom: 1%;
+    user-select: none;
+}
+
+#email-svg{
+    transition: 500ms;
+    margin: auto;
+    height: 30%;
+    width: fit-content;
+    margin-top: 2%;
+    margin-bottom: 5%;
+}
+
+body[attr-theme="dark"] #email-svg{
+    fill: white;
+}
+
+#help > #add-email{
+    height: 15%;
+    margin: auto;
+    padding: 0 5%;
+}
+
+#email-open{
+    width: 70%;
+    height: 80%;
+    box-shadow: 0px 10px 13px 0px rgba(184, 98, 0, 0.322);
+    background: var(--primary-color-gradient);
+    margin: auto;
+    border-radius: 20px;
+    transition: 500ms;
+}
+
+.close{
+    opacity: 0;
+}
+
+#address{
+    border-bottom: 2px solid white;
+    padding: 0 2%;
+    font-family: "Inter", sans-serif;
+    font-size: 16px;
+    height: 10%;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 50% 50%;
+    align-items: center;
+    justify-content: center;
+}
+
+#address > button{
+    grid-row-start: 1;
+    grid-row-end: 3;
+    grid-column-start: 2;
+    grid-column-end: 2;
+    margin: auto;
+    height: 80%;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    border: 0;
+    background-color: transparent;
+    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.425);
+    margin: auto;
+    cursor: pointer;
+    margin-left: auto;
+    margin-right: 1%;
+    transition: 500ms;
+}
+
+#address > button:hover{
+    transform: scale(1.1);
+    background-color: #faa134;
+}
+
+#address > button > svg{
+    fill: white;
+    height: 80%;
+    width: 80%;
+    margin: auto;
+}
+
+#message{
+    width: 90%;
+    height: 40%;
+    text-align: center;
+    padding: 2%;
+}
+
+#message-title{
+    width: 100%;
+    text-align: center;
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+
+#response{
+    width: 90%;
+    height: 40%;
+    text-align: center;
+    padding: 2%;
+    font-family: "Inter", sans-serif;
+}
+
+#response > h1{
+    font-size: 22px;
+}
+
+#response > p{
+    border: 1px solid black;
+    padding: 2%;
+    max-height: 25%;
+    overflow-y: auto;
+}
+
+#response > p::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	border-radius: 10px;
+	background-color: transparent;
+}
+
+#response > p::-webkit-scrollbar
+{
+	width: 5px;
+	background-color: transparent;
+}
+
+#response > p::-webkit-scrollbar-thumb
+{
+	border-radius: 10px;
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+	background-color: #555;
+}
+
+#buttons{
+    width: 95%;
+    margin: auto;
+    margin-top: 2vh;
+    padding: 2%;
+}
+
+#buttons > button{
+    border-radius: 20px;
+    border: 0;
+    background-color: transparent;
+    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.425);
+    padding: 0 1%;
+    height: 50%;
+    margin: auto;
+    transition: 500ms;
+    cursor: pointer;
+    margin-left: auto;
+    margin-right: 1%;
+    color: white;
+    font-size: 16px;
+    padding: 2%;
+}
+
+
+#buttons > button:hover{
+    transform: scale(1.1);
+    background-color: #faa134;
+}

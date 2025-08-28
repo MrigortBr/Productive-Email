@@ -1,0 +1,133 @@
+body{
+    --primary-color: #ff8f07;
+    --primary-color-gradient: linear-gradient(180deg,rgba(255, 143, 7, 1) 0%, rgb(184, 98, 0) 100%);
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    transition: 500ms;
+    color: white;
+}
+
+body[attr-theme="light"]{
+    background-color: #ffff;
+}
+
+body[attr-theme="dark"]{
+    background: linear-gradient(135deg, #4a4a4a, #1f1f1f);  
+}
+
+header{
+    display: flex;
+    width: 100vw;
+    height: 10vh;
+    background: var(--primary-color-gradient);
+    box-shadow: 0px 10px 13px 0px rgba(184, 98, 0, 0.322);
+}
+
+header > a {
+    height: 50%;
+    margin: auto;
+    margin-right: auto;
+    margin-left: 1%;
+}
+
+@keyframes zoomIn {
+    0% { transform: scale(1)}
+    50% {transform: scale(1.1)}
+    100% { transform: scale(1) }
+}
+
+header > a:hover{
+    animation: zoomIn 1s;
+    animation-iteration-count: infinite;
+}
+
+
+
+header > a > img{
+    height: 100%;
+    border-radius: 50%;
+    box-shadow: 2px 0px 5px 0px rgba(0, 0, 0, 0.267);
+}
+
+
+#add-email{
+    border-radius: 20px;
+    border: 0;
+    background-color: transparent;
+    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.425);
+    padding: 0 1%;
+    height: 50%;
+    margin: auto;
+    transition: 500ms;
+    cursor: pointer;
+    margin-left: auto;
+    margin-right: 1%;
+}
+
+#add-email:hover{
+    transform: scale(1.1);
+    background-color: #faa134;
+}
+
+#add-email > span{
+    align-items: center;
+    justify-content: center;
+    font-family: "Inter", sans-serif;
+    font-weight: 300;
+    font-style: normal;
+    user-select: none;
+    display: flex;
+    font-size: 16px;
+    color: white;
+}
+
+#add-email > span > svg {
+    height: 100%;
+    width: 26px;
+    transition: 1s;
+}
+
+#add-email:hover > span > svg{
+    transform: rotate(360deg);
+}
+
+#theme-switcher{
+    background-color: transparent;
+    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.425);
+    border: none;
+    height: 50%;
+    border-radius: 100%;
+    aspect-ratio: 1/1;
+    margin: auto;
+    margin-left: 1%;
+    margin-right: 1%;
+    transition: 500ms;
+    display: flex;
+    position: relative;
+    cursor: pointer;
+        color: white;
+
+}
+
+#theme-switcher > svg{
+    height: 80%;
+    width: 80%;
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    transition: 500ms;
+}
+
+#theme-switcher[attr-theme="dark"] > #theme-sun{
+    opacity: 0;
+}
+
+#theme-switcher[attr-theme="light"] > #theme-moon{
+    opacity: 0;
+}
+
+
+#theme-switcher:hover{
+    transform: scale(1.1);
+}
