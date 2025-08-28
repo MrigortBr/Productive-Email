@@ -1,11 +1,14 @@
 from src.model.EmailModel import EmailModel
 from werkzeug.datastructures import FileStorage
 from transformers import pipeline
+import PyPDF2
+import re
+import io
 
 class ServiceEmail:
     def __init__(self):
         self._model = EmailModel()
-        self.classifier = pipeline("zero-shot-classification", model="joeddav/xlm-roberta-large-xnli")
+        self.classifier = pipeline("zero-shot-classification", model="MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7")
         self.pipe = pipeline("text-generation", model="meta-llama/Llama-3.2-1B-Instruct")
 
     def getEmails(self):
@@ -14,7 +17,13 @@ class ServiceEmail:
         return emails
     
     def loadEmail(self, file: FileStorage, src: chr):
-        content = file.read().decode("utf-8")
+        content = None
+
+        if file.content_type == "application/pdf":
+            textExtracted = self._extract_pdf_content(file)
+            content = self._normalize_extracted_text(textExtracted)
+        else:
+            content = file.read().decode("utf-8", errors="ignore")
 
         email_data = self._parse_email(content)
 
@@ -31,7 +40,26 @@ class ServiceEmail:
             message=email_data["message"])
         
         return data
-        
+    
+    def _extract_pdf_content(self, file: FileStorage):
+        reader = PyPDF2.PdfReader(file)
+        page = reader.pages[0] 
+        text = page.extract_text()
+
+        return text
+
+    def _normalize_extracted_text(self, text: str) -> str:
+        # Junta as palavras quebradas (linhas soltas)
+        text = re.sub(r"\n+", " ", text)  
+        text = re.sub(r"\s+", " ", text).strip()
+
+        # Força quebra de linha entre campos importantes
+        text = re.sub(r"(De:.*?)(Para:)", r"\1\n\2", text)
+        text = re.sub(r"(Para:.*?)(Assunto:)", r"\1\n\2", text)
+        text = re.sub(r"(Assunto:.*?) (Olá)", r"\1\n\n\2", text)
+
+        return text
+
     def _parse_email(self, content: str):
         lines = content.splitlines()
         headers = {}
@@ -55,7 +83,7 @@ class ServiceEmail:
         return headers
 
     def _generateCategory(self, data):
-
+        data = data.replace("\n", "")
         labels = ["Mensagem de trabalho", "Mensagem de feriado ou social"]
         result = self.classifier(data, candidate_labels=labels)
         

@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 from src.service.emailService import service
 import os
+import PyPDF2
 
 routes = Blueprint('routes', __name__)
 
