@@ -3,7 +3,8 @@ from werkzeug.datastructures import FileStorage
 from transformers import pipeline
 import PyPDF2
 import re
-import io
+from flask import abort
+from peewee import OperationalError, ProgrammingError
 
 class ServiceEmail:
     def __init__(self):
@@ -12,25 +13,48 @@ class ServiceEmail:
         self.pipe = pipeline("text-generation", model="meta-llama/Llama-3.2-1B-Instruct")
 
     def getEmails(self):
-        emails = EmailModel.get_emails()
+        try:
+            emails = EmailModel.get_emails()
+            return [EmailModel.email_dict_to_dto(email) for email in emails]
+        except OperationalError as e:
+            abort(500, description={"message": "Falha ao conectar ao banco!", "details": str(e)})
+        except ProgrammingError as e:
+            abort(500, description={"message": "Tabela de emails não encontrada!", "details": str(e)})
 
-        return emails
     
+    def changStateEmail(self, id):
+        email = EmailModel.get_or_none(EmailModel.id == id)
+
+        if not email:
+            abort(404, description={"message": "Email não encontrado!", "id": id})
+        
+        email.sent = not email.sent
+        email.save()
+
+        if (email.sent):
+            return "Email marcado com enviado!"
+        else:
+            return "Email marcado com não enviado!"
+
     def loadEmail(self, file: FileStorage, src: chr):
         content = None
 
-        if file.content_type == "application/pdf":
-            textExtracted = self._extract_pdf_content(file)
-            content = self._normalize_extracted_text(textExtracted)
-        else:
-            content = file.read().decode("utf-8", errors="ignore")
+        try:
+            if file.content_type == "application/pdf":
+                textExtracted = self._extract_pdf_content(file)
+                content = self._normalize_extracted_text(textExtracted)
+            else:
+                content = file.read().decode("utf-8", errors="ignore")
+        except: 
+            abort(406, description={"message": "Arquivo enviado não pode ser lido!"})
 
         email_data = self._parse_email(content)
 
         category = self._generateCategory(email_data["message"])
         response = self._generateResponse(email_data["message"])
 
-        data = EmailModel.create(
+        try:
+            data = EmailModel.create(
             category=category,
             response=response,
             sender=email_data["sender"],
@@ -38,7 +62,13 @@ class ServiceEmail:
             file=src,
             title=email_data["title"],
             message=email_data["message"])
-        
+        except OperationalError as e:
+            abort(500, description={"message": "Falha ao conectar ao banco!", "details": str(e)})
+        except ProgrammingError as e:
+            abort(500, description={"message": "Tabela de emails não encontrada!", "details": str(e)})
+        except:
+            abort(500, description={"message": "Erro ao tentar salvar no banco de dados!"})
+
         return data
     
     def _extract_pdf_content(self, file: FileStorage):
@@ -92,7 +122,6 @@ class ServiceEmail:
         return catergory
 
     def _generateResponse(self, data):
-
         messages = [
             {"role": "system", "content": "Você é um assistente útil."},
             {"role": "user", "content": data}]
@@ -110,9 +139,21 @@ class ServiceEmail:
 
     def regenerateResponse(self, id, message):
         response = self._generateResponse(message)
-        EmailModel.update(response=response).where(EmailModel.id==id).execute()
+        email = EmailModel.get_or_none(EmailModel.id==id)
+
+        if not email:
+            abort(406, description={"message": "Email invalido!"})
+
+        email.response = response
+        try:
+            email.save()
+        except OperationalError as e:
+            abort(500, description={"message": "Falha ao conectar ao banco!", "details": str(e)})
+        except ProgrammingError as e:
+            abort(500, description={"message": "Tabela de emails não encontrada!", "details": str(e)})
+        except:
+            abort(500, description={"message": "Erro ao tentar salvar no banco de dados!"})
+
         return response
-
-
 
 service = ServiceEmail()

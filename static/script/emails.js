@@ -9,22 +9,41 @@ function newResponse(id){
     document.getElementById("drag-progress").style.display = "flex"         
     document.getElementById("status-send").innerHTML = "Gerando uma nova resposta. aguarde <br><b>obs: Ao gerar uma nova resposta a pagina atualizara, abra o email novamente!</b>"
 
-    axios.post("/api/newresponse", {id: email.id, message: email.message}).then(
+    axios.patch("/api/newresponse", {id: email.id, message: email.message}).then(
         r => {
-            email.response == r.data.message
+            email.response == r.data.data.message
             document.getElementById("drag-progress").style.display = "none"  
-            document.getElementById("textResponse").innerText = r.data.message
-        }  
+            document.getElementById("textResponse").innerText = r.data.data.message
+            showAlert(r.data.message, "info")
+        }
     )
 }
 
+function orderDataAndCreate(){
+    unproductiveData.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    productiveData.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+    productiveData.map((element) => {
+        addElementUnproductiveOrProductive(element)
+    })
+
+    unproductiveData.map((element) => {
+        addElementUnproductiveOrProductive(element)
+    })
+}
+
 function addUnproductiveOrProductive(element){
-    console.log(element)
     if (element.category == "Mensagem de trabalho"){
         productiveData.push(element)
-        document.getElementById("emails-container-productive").appendChild(createEmail(element.id, element.sender, element.title, element.created_at))
     }else{
         unproductiveData.push(element)
+    }
+}
+
+function addElementUnproductiveOrProductive(element){
+    if (element.category == "Mensagem de trabalho"){
+        document.getElementById("emails-container-productive").appendChild(createEmail(element.id, element.sender, element.title, element.created_at))
+    }else{
         document.getElementById("emails-container-unproductive").appendChild(createEmail(element.id, element.sender, element.title, element.created_at))
     }
 }
@@ -244,6 +263,8 @@ function dataRead(data){
         addUnproductiveOrProductive(element)
     });
 
+    orderDataAndCreate()
+
     if (productiveData.length == 0){
         document.getElementById("emails-container-productive").innerHTML = '<p class="no-data">Sem Emails</p>'
     }
@@ -268,5 +289,5 @@ function clickBar(element){
     }
 }
 
-axios.get("/api/listen").then(r => dataRead(r.data))
+axios.get("/api/listen").then(r => dataRead(r.data.data))
 

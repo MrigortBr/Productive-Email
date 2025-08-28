@@ -39,23 +39,22 @@ async function uploadFile(file) {
     }
 
     try {
-        // Cria FormData e adiciona o arquivo
         const formData = new FormData();
         formData.append("file", file);
 
-        // Envia via Axios
         const response = await axios.post("/api/upload", formData, {
             headers: { "Content-Type": "multipart/form-data" },
             onUploadProgress: (progressEvent) => {
                 let percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
                 document.getElementById("status-send").innerText = `Enviado: ${percent}%`;
             }
-        }).then(r => addUnproductiveOrProductive(r.data));
+        }).then(r => {
+            showAlert(r.data.message, "success")
+            addUnproductiveOrProductive(r.data.data)
+        });
 
-        // Atualiza UI
         document.getElementById("drag").style.display = "none";
         document.getElementById("drag-progress").style.display = "none";
-        showAlert("Upload concluído!", "success");
 
     } catch (error) {
         showAlert("Erro ao enviar o arquivo! tente novamente!", "error");

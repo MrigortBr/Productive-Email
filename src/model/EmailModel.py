@@ -11,6 +11,7 @@ class EmailModel(BaseModel):
     file = CharField()
     title = CharField()
     message = CharField()
+    sent = BooleanField(default=False)
     created_at = DateTimeField(default=datetime.now)
 
     @classmethod
@@ -27,7 +28,8 @@ class EmailModel(BaseModel):
                 "file": email.file,
                 "title": email.title,
                 "message": email.message,
-                "created_at": email.created_at
+                "created_at": email.created_at,
+                "sent": email.sent
             }
             for email in query
         ]
@@ -39,10 +41,26 @@ class EmailModel(BaseModel):
             "response": self.response,
             "sender": self.sender,
             "receiver": self.receiver,
-            "file": self.file,
             "title": self.title,
-            "message": self.message
+            "message": self.message,
+            "created_at": self.created_at,
+            "sent": self.sent
         }
+    
+    @staticmethod
+    def email_dict_to_dto(email_dict):
+        return {
+            "id": email_dict["id"],
+            "sender": email_dict["sender"],
+            "receiver": email_dict["receiver"],
+            "title": email_dict["title"],
+            "message": email_dict["message"],
+            "category": email_dict["category"],
+            "response": email_dict["response"],
+            "sent": email_dict["sent"],
+            "created_at": email_dict["created_at"].isoformat()  # se precisar
+        }
+
 
 
 if dataBase.db.is_closed():
