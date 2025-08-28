@@ -21,8 +21,8 @@ class DataBase:
             raise ValueError(f"Tipo de banco desconhecido: {self.__databaseType} \nTipos Aceitos: \n-sqlite \n-mysql \n-postgresql")
 
     def generateSqlite(self):
-        os.makedirs('./database', exist_ok=True)
-        self.db = SqliteDatabase('./database/database.db')
+        os.makedirs('src/database', exist_ok=True)
+        self.db = SqliteDatabase('src/database/database.db')
     
     def generateMysql(self):
         self.db = PostgresqlDatabase(
