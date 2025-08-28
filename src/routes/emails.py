@@ -36,7 +36,7 @@ def uploadEmail():
     os.makedirs('src/emails', exist_ok=True)
 
     if SAVE_FILE:
-        src = f"src/emails/{int((time.time()) * 1000)}"
+        src = f"src/emails/{int((time.time()) * 1000)}{os.path.splitext(file.filename)[1]}"
     else:
         src = "Não salvo!"
 

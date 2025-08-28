@@ -43,24 +43,28 @@ async function uploadFile(file) {
         formData.append("file", file);
 
         const response = await axios.post("/api/upload", formData, {
-            headers: { "Content-Type": "multipart/form-data" },
-            onUploadProgress: (progressEvent) => {
-                let percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                document.getElementById("status-send").innerText = `Enviado: ${percent}%`;
-            }
+            headers: { "Content-Type": "multipart/form-data" }
         }).then(r => {
             showAlert(r.data.message, "success")
             addUnproductiveOrProductive(r.data.data)
+            orderDataAndCreate()
         });
 
         document.getElementById("drag").style.display = "none";
-        document.getElementById("drag-progress").style.display = "none";
+        try {
+            document.getElementById("drag-progress").style.display = "none";
+        } catch (error) {
+            document.getElementById("drag-progress-minimized").style.display = "none";
+        }
 
     } catch (error) {
         showAlert("Erro ao enviar o arquivo! tente novamente!", "error");
         document.getElementById("drag").style.display = "none";
-        document.getElementById("drag-progress").style.display = "none";
-    }
+        try {
+            document.getElementById("drag-progress").style.display = "none";
+        } catch (error) {
+            document.getElementById("drag-progress-minimized").style.display = "none";
+        }    }
 }
 
 function validateFile(file){
@@ -78,3 +82,20 @@ function validateFile(file){
 
     return true
 }
+
+function maxmize(){
+    console.log("max")
+    document.getElementById("drag-progress-minimized").id = "drag-progress"
+    document.getElementById("drag-button").style.display = "flex"
+}
+
+function minimize(){
+    const drag = document.getElementById("drag-progress");
+    drag.removeEventListener("click", maxmize)
+    drag.id = "drag-progress-minimized"
+    document.getElementById("drag-button").style.display = "none"
+    setTimeout(() => {
+        drag.addEventListener("click", maxmize)
+    }, 100);
+}
+

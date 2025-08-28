@@ -76,7 +76,7 @@ body[attr-theme="dark"] #email-svg{
     font-size: 16px;
     height: 10%;
     display: grid;
-    grid-template-columns: 50% 50%;
+    grid-template-columns: 50% 35% 15%;
     grid-template-rows: 50% 50%;
     align-items: center;
     justify-content: center;
@@ -85,8 +85,8 @@ body[attr-theme="dark"] #email-svg{
 #address > button{
     grid-row-start: 1;
     grid-row-end: 3;
-    grid-column-start: 2;
-    grid-column-end: 2;
+    grid-column-start: 3;
+    grid-column-end: 3;
     margin: auto;
     height: 80%;
     aspect-ratio: 1/1;
@@ -99,6 +99,23 @@ body[attr-theme="dark"] #email-svg{
     margin-left: auto;
     margin-right: 1%;
     transition: 500ms;
+}
+
+#address > #sent{
+    grid-row-start: 1;
+    grid-row-end: 3;
+    grid-column-start: 2;
+    grid-column-end: 2;
+    background-color: transparent;
+    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.808);
+    text-align: center;
+    margin: auto;
+    height: 80%;
+    width: 100%;
+    border-radius: 20px;
+    color: white;
+    margin-right: auto;
+    margin-left: 1%;
 }
 
 #address > button:hover{

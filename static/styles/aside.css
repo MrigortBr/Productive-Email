@@ -15,6 +15,8 @@ aside > div {
 }
 
 
+
+
 .productive-container{
     width: 100%;
     height: 100%;
@@ -121,8 +123,16 @@ span[attr-state="hidden"] > p > svg{
     user-select: none;
 }
 
+.email-sent{
+    border: 2px solid green;
+}
+
 .email:hover{
     border: 1px solid black;
+}
+
+.email-sent:hover{
+    border: 2px solid green;
 }
 
 .email > p {

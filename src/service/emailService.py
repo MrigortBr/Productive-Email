@@ -21,7 +21,6 @@ class ServiceEmail:
         except ProgrammingError as e:
             abort(500, description={"message": "Tabela de emails não encontrada!", "details": str(e)})
 
-    
     def changStateEmail(self, id):
         email = EmailModel.get_or_none(EmailModel.id == id)
 

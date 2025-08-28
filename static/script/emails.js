@@ -1,5 +1,6 @@
 const unproductiveData = []
 const productiveData = []
+let sentState = false
 
 function newResponse(id){
     let email = productiveData.find((v) => v.id == id)
@@ -7,7 +8,7 @@ function newResponse(id){
     if (!email) email = unproductiveData.find((v) => v.id == id)
 
     document.getElementById("drag-progress").style.display = "flex"         
-    document.getElementById("status-send").innerHTML = "Gerando uma nova resposta. aguarde <br><b>obs: Ao gerar uma nova resposta a pagina atualizara, abra o email novamente!</b>"
+    document.getElementById("status-send").innerHTML = "Gerando uma nova resposta. aguarde!"
 
     axios.patch("/api/newresponse", {id: email.id, message: email.message}).then(
         r => {
@@ -19,16 +20,71 @@ function newResponse(id){
     )
 }
 
-function orderDataAndCreate(){
+
+function loadSent(){
+    data = localStorage.getItem("hide-sent") === "true"
+
+    if (data){
+        sentState = data
+    }
+
+    document.getElementById("hide-show-text").innerText = !sentState ? "Ocultar Enviados" : "Mostrar enviados"
+    document.getElementById("hide-show").setAttribute("attr-show", !sentState ? "show" : "hidden")
+    orderDataAndCreate()
+}
+
+
+function orderBySent(){
+    sentState = !sentState
+    document.getElementById("hide-show-text").innerText = !sentState ? "Ocultar Enviados" : "Mostrar enviados"
+    document.getElementById("hide-show").setAttribute("attr-show", !sentState ? "show" : "hidden")
+    localStorage.setItem("hide-sent", sentState)  
+    orderDataAndCreate()
+}
+
+function sentEmail(id){
+    axios.patch(`/api/marksent/${id}`).then(r => {
+        showAlert(r.data.message, "success");
+
+        const unproductive = unproductiveData.find((v) => v.id == id)
+        let sent = false
+        if (!unproductive){
+            const productive = productiveData.find((v) => v.id == id)
+            productive.sent = !productive.sent
+            sent = productive.sent
+        }else{
+            unproductive.sent = !unproductive.sent
+            sent = productive.sent = unproductive.sent
+        }
+        document.getElementById("sent").innerText = `Status: ${sent ? "Enviado" : "Não enviado"}, clique para mudar` 
+
+        orderDataAndCreate()
+    }).catch((e) => {
+        showAlert(e.response.data.error.message, "error");
+    })
+}
+
+function orderDataAndCreate(sent = sentState){
     unproductiveData.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
     productiveData.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
+    document.getElementById("emails-container-productive").innerHTML = ""
+    document.getElementById("emails-container-unproductive").innerHTML = ""
+
     productiveData.map((element) => {
-        addElementUnproductiveOrProductive(element)
+        if (sent){
+            if (element.sent != true) addElementUnproductiveOrProductive(element)
+        }else{
+            addElementUnproductiveOrProductive(element)
+        }
     })
 
     unproductiveData.map((element) => {
-        addElementUnproductiveOrProductive(element)
+        if (sent){
+            if (element.sent != true) addElementUnproductiveOrProductive(element)
+        }else{
+            addElementUnproductiveOrProductive(element)
+        }
     })
 }
 
@@ -42,9 +98,9 @@ function addUnproductiveOrProductive(element){
 
 function addElementUnproductiveOrProductive(element){
     if (element.category == "Mensagem de trabalho"){
-        document.getElementById("emails-container-productive").appendChild(createEmail(element.id, element.sender, element.title, element.created_at))
+        document.getElementById("emails-container-productive").appendChild(createEmail(element.id, element.sender, element.title, element.created_at, element.sent))
     }else{
-        document.getElementById("emails-container-unproductive").appendChild(createEmail(element.id, element.sender, element.title, element.created_at))
+        document.getElementById("emails-container-unproductive").appendChild(createEmail(element.id, element.sender, element.title, element.created_at, element.sent))
     }
 }
 
@@ -62,6 +118,11 @@ function openEmail(id){
     const pSender = document.createElement('p');
     pSender.id = "sender";
     pSender.innerHTML = `<b>De:</b> ${email.sender}`;
+
+    const sent = document.createElement("button")
+    sent.id = "sent"
+    sent.innerText = `Status: ${email.sent ? "Enviado" : "Não enviado"}, clique para mudar` 
+    sent.addEventListener("click", () => sentEmail(id))
 
     const button = document.createElement("button");
 
@@ -87,6 +148,7 @@ function openEmail(id){
     pReceiver.innerHTML = `<b>Para:</b> ${email.receiver}`;
 
     divAddress.appendChild(pSender);
+    divAddress.appendChild(sent);
     divAddress.appendChild(button)
     divAddress.appendChild(pReceiver);
 
@@ -222,12 +284,15 @@ function createHelpEmail() {
     document.getElementById("email-full").appendChild(divHelp)
 }
 
-function createEmail(id, de, title, date) {
+function createEmail(id, de, title, date, sent) {
     const divEmail = document.createElement('div');
     divEmail.onclick = function() {
         openEmail(id);
     };
     divEmail.classList.add('email');
+    if (sent){
+        divEmail.classList.add("email-sent");
+    }
 
     const pDe = document.createElement('p');
     pDe.innerHTML = `<b>De:</b> ${de}`;
@@ -265,6 +330,8 @@ function dataRead(data){
 
     orderDataAndCreate()
 
+    loadSent()
+
     if (productiveData.length == 0){
         document.getElementById("emails-container-productive").innerHTML = '<p class="no-data">Sem Emails</p>'
     }
@@ -288,6 +355,8 @@ function clickBar(element){
         doc.classList = "productive-container productive-half"
     }
 }
+
+
 
 axios.get("/api/listen").then(r => dataRead(r.data.data))
 

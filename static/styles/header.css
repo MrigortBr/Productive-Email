@@ -9,7 +9,7 @@ body{
 }
 
 body[attr-theme="light"]{
-    background-color: #ffff;
+    background-color: #adadad;
 }
 
 body[attr-theme="dark"]{
@@ -51,7 +51,7 @@ header > a > img{
 }
 
 
-#add-email{
+#add-email, #hide-show{
     border-radius: 20px;
     border: 0;
     background-color: transparent;
@@ -65,12 +65,16 @@ header > a > img{
     margin-right: 1%;
 }
 
-#add-email:hover{
+#hide-show > span > svg{
+    margin-left: 10px;
+}
+
+#add-email:hover, #hide-show:hover{
     transform: scale(1.1);
     background-color: #faa134;
 }
 
-#add-email > span{
+#add-email > span, #hide-show > span{
     align-items: center;
     justify-content: center;
     font-family: "Inter", sans-serif;
@@ -82,13 +86,13 @@ header > a > img{
     color: white;
 }
 
-#add-email > span > svg {
+#add-email > span > svg, #hide-show > span > svg{
     height: 100%;
     width: 26px;
     transition: 1s;
 }
 
-#add-email:hover > span > svg{
+#add-email:hover > span > svg, #hide-show:hover > span > svg{
     transform: rotate(360deg);
 }
 
@@ -106,8 +110,7 @@ header > a > img{
     display: flex;
     position: relative;
     cursor: pointer;
-        color: white;
-
+    color: white;
 }
 
 #theme-switcher > svg{
@@ -125,6 +128,14 @@ header > a > img{
 
 #theme-switcher[attr-theme="light"] > #theme-moon{
     opacity: 0;
+}
+
+#hide-show[attr-show="show"] > span > #show{
+    display: none;
+}
+
+#hide-show[attr-show="hidden"] > span > #hidden{
+    display: none;
 }
 
 
