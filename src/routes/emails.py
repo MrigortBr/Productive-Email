@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
 from src.service.emailService import service
+import os
 
 routes = Blueprint('routes', __name__)
 
@@ -26,6 +27,8 @@ def uploadEmail():
     if file.filename == "":
         return "Nome do arquivo inválido", 400
     
+    os.makedirs('./emails', exist_ok=True)
+
     src = f"emails/{file.filename}"
 
     service.loadEmail(file, src)
