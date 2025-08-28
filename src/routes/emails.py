@@ -4,8 +4,6 @@ import os
 
 routes = Blueprint('routes', __name__)
 
-
-
 @routes.route("/", methods=["GET"])
 def listenApi():
     return "Api Running!"
@@ -27,15 +25,15 @@ def uploadEmail():
     if file.filename == "":
         return "Nome do arquivo inválido", 400
     
-    os.makedirs('./emails', exist_ok=True)
+    os.makedirs('src/emails', exist_ok=True)
 
-    src = f"emails/{file.filename}"
+    src = f"src/emails/{file.filename}"
 
-    service.loadEmail(file, src)
+    data = service.loadEmail(file, src)
     file.seek(0)
     file.save(src)
 
-    return f"Arquivo {file.filename} recebido!"  
+    return data.to_dict(), 200
 
 
 @routes.route("/newresponse", methods=["POST"])

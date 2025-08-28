@@ -9,13 +9,24 @@ function newResponse(id){
     document.getElementById("drag-progress").style.display = "flex"         
     document.getElementById("status-send").innerHTML = "Gerando uma nova resposta. aguarde <br><b>obs: Ao gerar uma nova resposta a pagina atualizara, abra o email novamente!</b>"
 
-    axios.post("http://127.0.0.1:2000/api/newresponse", {id: email.id, message: email.message}).then(
+    axios.post("/api/newresponse", {id: email.id, message: email.message}).then(
         r => {
             email.response == r.data.message
             document.getElementById("drag-progress").style.display = "none"  
             document.getElementById("textResponse").innerText = r.data.message
         }  
     )
+}
+
+function addUnproductiveOrProductive(element){
+    console.log(element)
+    if (element.category == "Mensagem de trabalho"){
+        productiveData.push(element)
+        document.getElementById("emails-container-productive").appendChild(createEmail(element.id, element.sender, element.title, element.created_at))
+    }else{
+        unproductiveData.push(element)
+        document.getElementById("emails-container-unproductive").appendChild(createEmail(element.id, element.sender, element.title, element.created_at))
+    }
 }
 
 function openEmail(id){
@@ -228,14 +239,9 @@ function formatDate(dateString) {
 }
 
 function dataRead(data){
+
     data.forEach(element => {
-        if (element.category == "Mensagem de trabalho"){
-            productiveData.push(element)
-            document.getElementById("emails-container-productive").appendChild(createEmail(element.id, element.sender, element.title, element.created_at))
-        }else{
-            productiveData.push(element)
-            document.getElementById("emails-container-unproductive").appendChild(createEmail(element.id, element.sender, element.title, element.created_at))
-        }
+        addUnproductiveOrProductive(element)
     });
 
     if (productiveData.length == 0){
@@ -243,7 +249,7 @@ function dataRead(data){
     }
 
     if (unproductiveData.length == 0){
-        document.getElementById("emails-container-productive").innerHTML = '<p class="no-data">Sem Emails</p>'
+        document.getElementById("emails-container-unproductive").innerHTML = '<p class="no-data">Sem Emails</p>'
     }
 }
 
@@ -262,5 +268,5 @@ function clickBar(element){
     }
 }
 
-axios.get("http://127.0.0.1:2000/api/listen").then(r => dataRead(r.data))
+axios.get("/api/listen").then(r => dataRead(r.data))
 

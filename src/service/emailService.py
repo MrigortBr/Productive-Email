@@ -21,7 +21,7 @@ class ServiceEmail:
         category = self._generateCategory(email_data["message"])
         response = self._generateResponse(email_data["message"])
 
-        EmailModel.create(
+        data = EmailModel.create(
             category=category,
             response=response,
             sender=email_data["sender"],
@@ -29,6 +29,8 @@ class ServiceEmail:
             file=src,
             title=email_data["title"],
             message=email_data["message"])
+        
+        return data
         
     def _parse_email(self, content: str):
         lines = content.splitlines()

@@ -31,6 +31,18 @@ class EmailModel(BaseModel):
             }
             for email in query
         ]
+    
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "category": self.category,
+            "response": self.response,
+            "sender": self.sender,
+            "receiver": self.receiver,
+            "file": self.file,
+            "title": self.title,
+            "message": self.message
+        }
 
 
 if dataBase.db.is_closed():
