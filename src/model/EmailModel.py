@@ -1,4 +1,4 @@
-from database import BaseModel, dataBase
+from src.database.database import BaseModel, dataBase
 from peewee import *
 from datetime import datetime
 
