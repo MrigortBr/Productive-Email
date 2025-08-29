@@ -5,13 +5,33 @@ import PyPDF2
 import re
 from flask import abort
 from peewee import OperationalError, ProgrammingError
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 class ServiceEmail:
     def __init__(self):
-        self._model = EmailModel()
-        self.classifier = pipeline("zero-shot-classification", model="MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7")
-        self.pipe = pipeline("text-generation", model="meta-llama/Llama-3.2-1B-Instruct")
+        token = os.getenv("TOKEN_HUGGINGFACE")
+        classifierName = os.getenv("MODEL_ZERO_SHOOT_CLASSIFICATION")
+        pipeName = os.getenv("MODEL_TEXT_GENERATION")
 
+        if not token:
+            raise RuntimeError("Token HuggingFace not found specify in .env TOKEN_HUGGINGFACE=######.")
+        
+        if not classifierName:
+            raise RuntimeError("Model of zero shot classification HuggingFace not found specify in .env MODEL_ZERO_SHOOT_CLASSIFICATION=######.")
+        
+        if not pipeName:
+            raise RuntimeError("Model of text generation HuggingFace not found specify in .env MODEL_TEXT_GENERATION=######.")
+
+        self._model = EmailModel()
+        self.classifier = pipeline("zero-shot-classification", model=classifierName, token=token)
+        self.pipe = pipeline(
+            "text-generation",
+            model=pipeName,
+            token=token)
+        
     def getEmails(self):
         try:
             emails = EmailModel.get_emails()
