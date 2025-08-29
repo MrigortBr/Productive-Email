@@ -8,6 +8,10 @@ body{
     color: white;
 }
 
+body > *{
+    font-family: "Inter", sans-serif;
+}
+
 body[attr-theme="light"]{
     background-color: #adadad;
 }

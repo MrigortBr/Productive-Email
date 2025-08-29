@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="static/styles/aside.css">
     <link rel="stylesheet" href="static/styles/main.css">
     <link rel="stylesheet" href="static/styles/drag.css">
+    <link rel="stylesheet" href="static/styles/alert.css">
 </head>
 <body attr-theme="dark">
     <input type="file" id="file" accept=".pdf,.txt">
@@ -111,6 +112,11 @@
             <div class="spinner"></div>
             <p id="status-send">Enviando email.</p> 
         </div>
+    </div>
+
+    <div id="loading">
+        <div class="spinner orange"></div>
+        <p>Carregando Emails</p>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>

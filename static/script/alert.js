@@ -1,22 +1,20 @@
-    function showAlert(message, type = "info") {
-      // Criar container se não existir
-      let container = document.getElementById("custom-alert-container");
-      if (!container) {
-        container = document.createElement("div");
-        container.id = "custom-alert-container";
-        document.body.appendChild(container);
-      }
+function showAlert(message, type = "info") {
+  let container = document.getElementById("custom-alert-container");
 
-      // Criar alerta
-      const alertBox = document.createElement("div");
-      alertBox.className = `custom-alert ${type}`;
-      alertBox.textContent = message;
+  if (!container) {
+    container = document.createElement("div");
+    container.id = "custom-alert-container";
+    document.body.appendChild(container);
+  }
 
-      container.appendChild(alertBox);
+  const alertBox = document.createElement("div");
+  alertBox.className = `custom-alert ${type}`;
+  alertBox.textContent = message;
 
-      // Remover depois de 3s
-      setTimeout(() => {
-        alertBox.classList.add("hide");
-        setTimeout(() => alertBox.remove(), 300);
-      }, 3000);
-    }
+  container.appendChild(alertBox);
+
+  setTimeout(() => {
+    alertBox.classList.add("hide");
+    setTimeout(() => container.remove(), 500);
+  }, 3000);
+}

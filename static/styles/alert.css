@@ -1,0 +1,37 @@
+@keyframes enter {
+  0% { transform: translateX(100%); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+
+#custom-alert-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 9999;
+    animation-name: enter;
+    animation-duration: 500ms;
+    animation-fill-mode: forwards;
+}
+
+.custom-alert {
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    opacity: 1;
+    transform: translateX(0);
+    transition: all 0.3s ease;
+}
+
+.custom-alert.success { background: #28a745; }
+.custom-alert.error { background: #dc3545; }
+.custom-alert.info { background: #007bff; }
+
+.custom-alert.hide {
+    opacity: 0;
+    transform: translateX(100%);
+}

@@ -1,25 +1,43 @@
 const unproductiveData = []
 const productiveData = []
 let sentState = false
+let newResponseID = 0
 
 function newResponse(id){
     let email = productiveData.find((v) => v.id == id)
 
     if (!email) email = unproductiveData.find((v) => v.id == id)
+    newResponseID = email.id
 
-    document.getElementById("drag-progress").style.display = "flex"         
+    let dragElement = document.getElementById("drag-progress")
+
+    if (dragElement){
+        dragElement.style.display = "flex"  
+    }else{
+        document.getElementById("drag-button").style.display = "flex"
+        document.getElementById("drag-progress-minimized").id = "drag-progress"
+    }    
     document.getElementById("status-send").innerHTML = "Gerando uma nova resposta. aguarde!"
 
     axios.patch("/api/newresponse", {id: email.id, message: email.message}).then(
         r => {
             email.response == r.data.data.message
-            document.getElementById("drag-progress").style.display = "none"  
-            document.getElementById("textResponse").innerText = r.data.data.message
-            showAlert(r.data.message, "info")
+            let dragElement = document.getElementById("drag-progress")
+            
+            if (newResponseID == r.data.data.id){
+                if (dragElement){
+                    dragElement.style.display = "none"  
+                }else{
+                    document.getElementById("drag-progress-minimized").style.display = "none"
+                }
+                document.getElementById("textResponse").innerText = r.data.data.message
+                showAlert(r.data.message, "info")
+            }else{
+                showAlert(r.data.message + " Em outro email.", "info")
+            }
         }
     )
 }
-
 
 function loadSent(){
     data = localStorage.getItem("hide-sent") === "true"
@@ -32,7 +50,6 @@ function loadSent(){
     document.getElementById("hide-show").setAttribute("attr-show", !sentState ? "show" : "hidden")
     orderDataAndCreate()
 }
-
 
 function orderBySent(){
     sentState = !sentState
@@ -67,9 +84,10 @@ function sentEmail(id){
 function orderDataAndCreate(sent = sentState){
     unproductiveData.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
     productiveData.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-
-    document.getElementById("emails-container-productive").innerHTML = ""
-    document.getElementById("emails-container-unproductive").innerHTML = ""
+    emailsUnprodutiveComp = document.getElementById("emails-container-unproductive")
+    emailsProdutiveComp = document.getElementById("emails-container-productive")
+    emailsProdutiveComp.innerHTML = ""
+    emailsUnprodutiveComp.innerHTML = ""
 
     productiveData.map((element) => {
         if (sent){
@@ -86,6 +104,14 @@ function orderDataAndCreate(sent = sentState){
             addElementUnproductiveOrProductive(element)
         }
     })
+
+    if (emailsProdutiveComp.children.length == 0){
+        document.getElementById("emails-container-productive").innerHTML = '<p class="no-data">Sem Emails</p>'
+    }
+
+    if (emailsUnprodutiveComp.children.length == 0){
+        document.getElementById("emails-container-unproductive").innerHTML = '<p class="no-data">Sem Emails</p>'
+    }
 }
 
 function addUnproductiveOrProductive(element){
@@ -331,14 +357,6 @@ function dataRead(data){
     orderDataAndCreate()
 
     loadSent()
-
-    if (productiveData.length == 0){
-        document.getElementById("emails-container-productive").innerHTML = '<p class="no-data">Sem Emails</p>'
-    }
-
-    if (unproductiveData.length == 0){
-        document.getElementById("emails-container-unproductive").innerHTML = '<p class="no-data">Sem Emails</p>'
-    }
 }
 
 function clickBar(element){
@@ -358,5 +376,11 @@ function clickBar(element){
 
 
 
-axios.get("/api/listen").then(r => dataRead(r.data.data))
+axios.get("/api/listen").then(r => {
+    document.getElementById("loading").style.opacity = 0
+    setTimeout(() => {
+        document.getElementById("loading").style.display = "none"
+    }, 300);
+    dataRead(r.data.data)
+})
 
