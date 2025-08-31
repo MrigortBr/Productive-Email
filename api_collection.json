@@ -1,0 +1,162 @@
+{
+	"info": {
+		"_postman_id": "b536cb24-a659-4b1f-8214-8a64d5038b9d",
+		"name": "FasterEmail",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "46482789",
+		"_collection_link": "https://mrigortbr.postman.co/workspace/MrIgortbr's-Workspace~0bb08ee1-a524-4c85-8c5f-9d6e5244ae18/collection/46482789-b536cb24-a659-4b1f-8214-8a64d5038b9d?action=share&source=collection_link&creator=46482789"
+	},
+	"item": [
+		{
+			"name": "Get Html Index",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTMzLCJpYXQiOjE3NTE2NTI1OTJ9.riXQ_aaOBGvhWoUzhlcVe7WaV97QiRYfG2vSyC4dOgY",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"link\": \"github.com/MrigortBr\",\r\n    \"customurl\": \"cod\"\r\n}"
+				},
+				"url": {
+					"raw": "{{baseURL}}",
+					"host": [
+						"{{baseURL}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Status api",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/api/",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Emails",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/api/listen",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"listen"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Upload Emails",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/igort/Downloads/pf.pdf"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/upload",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"upload"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Generate new Response",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 1,\r\n    \"message\": \"Olá pessoal, Desejo a todos vocês um Feliz Natal e um próspero Ano Novo! Que 2024 seja repleto de sucesso e muitas conquistas para a equipe da AutoU. Abraços!\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/newresponse",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"newresponse"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Mark email to sent",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/api/marksent/1",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"marksent",
+						"1"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "",
+			"type": "default"
+		}
+	]
+}
