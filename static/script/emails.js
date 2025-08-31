@@ -1,5 +1,7 @@
 const unproductiveData = []
 const productiveData = []
+let categoryFiltred = []
+let categorys = []
 let sentState = false
 let newResponseID = 0
 
@@ -39,23 +41,11 @@ function newResponse(id){
     )
 }
 
-function loadSent(){
-    data = localStorage.getItem("hide-sent") === "true"
-
-    if (data){
-        sentState = data
-    }
-
-    document.getElementById("hide-show-text").innerText = !sentState ? "Ocultar Enviados" : "Mostrar enviados"
-    document.getElementById("hide-show").setAttribute("attr-show", !sentState ? "show" : "hidden")
-    orderDataAndCreate()
-}
-
 function orderBySent(){
-    sentState = !sentState
-    document.getElementById("hide-show-text").innerText = !sentState ? "Ocultar Enviados" : "Mostrar enviados"
-    document.getElementById("hide-show").setAttribute("attr-show", !sentState ? "show" : "hidden")
-    localStorage.setItem("hide-sent", sentState)  
+    //sentState = !sentState
+    //document.getElementById("hide-show-text").innerText = !sentState ? "Ocultar Enviados" : "Mostrar enviados"
+    //document.getElementById("hide-show").setAttribute("attr-show", !sentState ? "show" : "hidden")
+    //localStorage.setItem("hide-sent", sentState)  
     orderDataAndCreate()
 }
 
@@ -90,7 +80,7 @@ function orderDataAndCreate(sent = sentState){
     emailsUnprodutiveComp.innerHTML = ""
 
     productiveData.map((element) => {
-        if (sent){
+        if (!sent){
             if (element.sent != true) addElementUnproductiveOrProductive(element)
         }else{
             addElementUnproductiveOrProductive(element)
@@ -98,7 +88,7 @@ function orderDataAndCreate(sent = sentState){
     })
 
     unproductiveData.map((element) => {
-        if (sent){
+        if (!sent){
             if (element.sent != true) addElementUnproductiveOrProductive(element)
         }else{
             addElementUnproductiveOrProductive(element)
@@ -115,7 +105,7 @@ function orderDataAndCreate(sent = sentState){
 }
 
 function addUnproductiveOrProductive(element){
-    if (element.category == "Mensagem de trabalho"){
+    if (categorys[element.category] == "Produtivo"){
         productiveData.push(element)
     }else{
         unproductiveData.push(element)
@@ -123,11 +113,15 @@ function addUnproductiveOrProductive(element){
 }
 
 function addElementUnproductiveOrProductive(element){
-    if (element.category == "Mensagem de trabalho"){
-        document.getElementById("emails-container-productive").appendChild(createEmail(element.id, element.sender, element.title, element.created_at, element.sent))
-    }else{
-        document.getElementById("emails-container-unproductive").appendChild(createEmail(element.id, element.sender, element.title, element.created_at, element.sent))
+    if (thisElementCanShow(element.category)){
+        
+        if (categorys[element.category] == "Produtivo"){
+            document.getElementById("emails-container-productive").appendChild(createEmail(element.id, element.sender, element.title, element.created_at, element.sent, element.category))
+        }else{
+            document.getElementById("emails-container-unproductive").appendChild(createEmail(element.id, element.sender, element.title, element.created_at, element.sent, element.category))
+        }
     }
+
 }
 
 function openEmail(id){
@@ -310,7 +304,7 @@ function createHelpEmail() {
     document.getElementById("email-full").appendChild(divHelp)
 }
 
-function createEmail(id, de, title, date, sent) {
+function createEmail(id, de, title, date, sent, category) {
     const divEmail = document.createElement('div');
     divEmail.onclick = function() {
         openEmail(id);
@@ -325,7 +319,7 @@ function createEmail(id, de, title, date, sent) {
     divEmail.appendChild(pDe);
 
     const pTitulo = document.createElement('p');
-    pTitulo.innerHTML = `<b>Titulo:</b> ${title}`;
+    pTitulo.innerHTML = `<b>${category}:</b> ${title}`;
     divEmail.appendChild(pTitulo);
 
     const pEnviado = document.createElement('p');
@@ -355,8 +349,6 @@ function dataRead(data){
     });
 
     orderDataAndCreate()
-
-    loadSent()
 }
 
 function clickBar(element){
@@ -374,13 +366,98 @@ function clickBar(element){
     }
 }
 
+function openFilters(ev){
+        const hideElement = document.getElementById("hide-show")
+        const hideAttr = hideElement.getAttribute("attr-show")
 
+        document.getElementById("filter").style.display = hideAttr == "show" ? "none" : "flex"
+        hideElement.setAttribute("attr-show", hideAttr == "show" ? "hidden" : "show")  
+  
+
+}
+
+function loadCategorys(data){
+    categorys = data
+    const filterElement = document.getElementById("filter")
+    Object.keys(categorys).forEach((v) => {
+        const spanCheckbox = document.createElement('span');
+        spanCheckbox.classList.add('checkbox');
+
+        const inputCheckbox = document.createElement('input');
+        inputCheckbox.type = 'checkbox';
+        inputCheckbox.addEventListener("click", selectFilter)
+        inputCheckbox.name = v
+        categoryFiltred.indexOf(v) > -1 ? inputCheckbox.checked = true : inputCheckbox.checked = false
+
+        const textoLabel = document.createTextNode(v);
+
+        spanCheckbox.appendChild(inputCheckbox);
+        spanCheckbox.appendChild(textoLabel);
+
+        filterElement.appendChild(spanCheckbox)
+    })
+
+}
+
+function selectFilter(element){
+    if (element.name == "sent"){
+        sentState = element.checked
+
+        localStorage.setItem("see-sent", sentState)
+    }else{
+        element = element.target
+        if (element.checked){
+            categoryFiltred.push(element.name)
+        }else{
+            const index = categoryFiltred.indexOf(element.name)
+            categoryFiltred.splice(index, 1)
+        }
+
+        localStorage.setItem("categorys", JSON.stringify(categoryFiltred))
+    }
+
+    orderDataAndCreate()
+}
+
+function thisElementCanShow(category){
+    if (categoryFiltred.indexOf(category) > -1){
+        return true
+    }else{
+        return false
+    }
+}
+
+function loadLocalCategorys(category){
+    const data = localStorage.getItem("categorys")
+
+    if (data == undefined){
+        localStorage.setItem("categorys", JSON.stringify(Object.keys(category)))
+    }else{
+        categoryFiltred = JSON.parse(data)
+    }
+}
+
+function loadSent(){
+    const data = localStorage.getItem("see-sent")
+    let state = true
+
+    if (data == undefined){
+        localStorage.setItem("see-sent", true)
+    }else{
+        state = data == "true" ? true : false
+        sentState = state
+    }
+
+    document.getElementById("sent-check").checked = state
+}
 
 axios.get("/api/listen").then(r => {
     document.getElementById("loading").style.opacity = 0
     setTimeout(() => {
         document.getElementById("loading").style.display = "none"
     }, 300);
-    dataRead(r.data.data)
+    loadSent();
+    loadLocalCategorys(r.data.data.dictionary)
+    loadCategorys(r.data.data.dictionary)
+    dataRead(r.data.data.emails)
 })
-

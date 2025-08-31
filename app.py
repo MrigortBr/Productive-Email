@@ -8,7 +8,6 @@ from src.routes.pages import pages
 app = Flask(__name__)
 CORS(app)
 
-# Handler global de erros HTTP
 @app.errorhandler(400)
 @app.errorhandler(404)
 @app.errorhandler(406)

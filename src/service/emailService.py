@@ -16,6 +16,20 @@ class ServiceEmail:
         classifierName = os.getenv("MODEL_ZERO_SHOOT_CLASSIFICATION")
         pipeName = os.getenv("MODEL_TEXT_GENERATION")
 
+        self.labels = {
+            "Solicitação de serviço": "Produtivo",
+            "Problema técnico": "Produtivo",
+            "Pedido de informação": "Produtivo",
+            "Problema financeiro": "Produtivo",
+            "Pedido de documento": "Produtivo",
+            "Pedido de cancelamento": "Produtivo",
+            "Problema de acesso": "Produtivo",
+            "Alerta de segurança": "Produtivo",
+            "Agradecimento": "Inprodutivo",
+            "Elogio": "Inprodutivo",
+            "Congratulação": "Inprodutivo",
+            "Felicitações de feriado": "Inprodutivo"}
+
         if not token:
             raise RuntimeError("Token HuggingFace not found specify in .env TOKEN_HUGGINGFACE=######.")
         
@@ -35,7 +49,7 @@ class ServiceEmail:
     def getEmails(self):
         try:
             emails = EmailModel.get_emails()
-            return [EmailModel.email_dict_to_dto(email) for email in emails]
+            return {"emails": [EmailModel.email_dict_to_dto(email) for email in emails], "dictionary": self.labels}
         except OperationalError as e:
             abort(500, description={"message": "Falha ao conectar ao banco!", "details": str(e)})
         except ProgrammingError as e:
@@ -133,8 +147,8 @@ class ServiceEmail:
 
     def _generateCategory(self, data):
         data = data.replace("\n", "")
-        labels = ["Mensagem de trabalho", "Mensagem de feriado ou social"]
-        result = self.classifier(data, candidate_labels=labels)
+
+        result = self.classifier(data, candidate_labels=list(self.labels.keys()))
         
         catergory = result["labels"][0]
         

@@ -3,7 +3,26 @@ aside{
     border-right: 1px solid black;
     display: flex;
         font-family: "Inter", sans-serif;
+        transition: 500ms;
 }
+
+body[attr-theme="light"] aside {
+    background-color: rgba(245, 245, 245, 0,5)
+}
+
+body[attr-theme="light"] .no-data {
+    color: var(--primary-color);
+}
+
+
+body[attr-theme="dark"] aside {
+    background-color: rgba(58, 58, 58, 0.5);
+}
+
+body[attr-theme="dark"] .no-data {
+    color: white;
+}
+
 
 aside > div {
     width: 100%;
@@ -36,10 +55,19 @@ aside > div {
 
 .emails-container::-webkit-scrollbar-track
 {
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
 	border-radius: 10px;
 	background-color: transparent;
 }
+
+body[attr-theme="light"] .emails-container::-webkit-scrollbar-track {
+	-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.699);
+    
+}
+
+body[attr-theme="dark"] .emails-container::-webkit-scrollbar-track {
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+}
+
 
 .emails-container::-webkit-scrollbar
 {
@@ -74,7 +102,7 @@ aside > div {
 .title{
     width: 95%;
     margin: 1vh auto;
-    background-color: #a75c01;
+
     border-radius: 20px;
     display: flex;
     align-items: center;
@@ -85,6 +113,16 @@ aside > div {
     box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0);
     transition: 500ms;
 }
+
+body[attr-theme="light"] .title {
+    background-color: #e07c01;
+    
+}
+
+body[attr-theme="dark"] .title {
+    background-color: #a75c01;
+}
+
 
 .title:hover{
     width: 99%;
@@ -122,6 +160,16 @@ span[attr-state="hidden"] > p > svg{
     align-items: stretch;    
     user-select: none;
 }
+
+body[attr-theme="light"] .email {
+    background-color: #e47e01;
+    
+}
+
+body[attr-theme="dark"] .email {
+    background-color: #a16a26;
+}
+
 
 .email-sent{
     border: 2px solid green;
